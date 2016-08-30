@@ -1,4 +1,4 @@
-# tddef-toolkit-mybatis
+# tddef-toolkit-mybatis<br>
 mybatis-generator插件，生成基础dao和常见crud方法，支持mysql和oracle分页，实体类带注释
 generatorConfig.xml配置如下：
 
@@ -7,9 +7,8 @@ generatorConfig.xml配置如下：
   PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"  
   "mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-	<!-- 配置参数 -->
-	<properties resource="conf/config4Generator.properties" />
-	<context id="context" targetRuntime="MyBatis3">
+		<properties resource="conf/config4Generator.properties" />
+		<context id="context" targetRuntime="MyBatis3">
 		<property name="javaFileEncoding" value="UTF-8"/>
 		<property name="mapperTargetPackage" value="${packeageName}.dao" />
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
@@ -46,5 +45,5 @@ generatorConfig.xml配置如下：
 
 		<!-- 要生成的表 -->
 		<table tableName="auth_org" domainObjectName="AuthOrg" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
-	</context>
+		</context>
 </generatorConfiguration>
