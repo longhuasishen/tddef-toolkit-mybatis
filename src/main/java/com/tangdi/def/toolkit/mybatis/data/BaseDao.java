@@ -26,9 +26,11 @@ public interface BaseDao<T, ID> {
 
 	int updateByPrimaryKey(T record) ;
 
-	List<T> selectAll() ;
+	List selectAll() ;
 	
-	List<T> selectByPager(Map param) ;
+	List selectByPager(Map param) ;
 	
-	List<T> selectByCondition(Map param) ;
+	List selectByCondition(Map param) ;
+	
+	int countByCondition(Map param);
 }

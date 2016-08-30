@@ -4,7 +4,7 @@
 
   <groupId>com.tangdi.def</groupId>
   <artifactId>tddef-toolkit-mybatis</artifactId>
-  <version>0.6.1</version>
+  <version>0.6.4</version>
   <packaging>jar</packaging>
 
   <name>td-toolkit-mybatis</name>

@@ -22,7 +22,7 @@ public class AddPaginationElementGenerator extends AbstractXmlElementGenerator
   public void addElements(XmlElement parentElement)
   {
 	//add base_column_list when columns = primarykeycolumns
-	if(this.introspectedTable.getAllColumns().size() == this.introspectedTable.getPrimaryKeyColumns().size()){
+	if(this.introspectedTable.getAllColumns().size() == this.introspectedTable.getPrimaryKeyColumns().size() || this.introspectedTable.getPrimaryKeyColumns().size() ==0){
 		XmlElement answer = new XmlElement("sql");
         answer.addAttribute(new Attribute("id", introspectedTable.getBaseColumnListId()));
         context.getCommentGenerator().addComment(answer);
@@ -123,13 +123,14 @@ public class AddPaginationElementGenerator extends AbstractXmlElementGenerator
     for(int i = 0 ; i < columns.size() ; i++ ){
     	IntrospectedColumn column = (IntrospectedColumn)columns.get(i);
     	String columnName = column.getActualColumnName();
+    	String colJavaName = column.getJavaProperty();
     	XmlElement ifExistElement = new XmlElement("if");
-    	ifExistElement.addAttribute(new Attribute("test ", columnName + " !=null"));
+    	ifExistElement.addAttribute(new Attribute("test ", colJavaName + " !=null"));
     	sb.setLength(0);
         sb.append(" and ").
            append(columnName).
            append(" = #{").
-           append(columnName).
+           append(colJavaName).
            append(",jdbcType=").
            append(column.getJdbcTypeName()).
            append("}");
@@ -142,6 +143,7 @@ public class AddPaginationElementGenerator extends AbstractXmlElementGenerator
     parentElement.addElement(pageElement);
     
     addCondition(parentElement);
+    addCountCondition(parentElement);
   }
   /***
    * 添加条件查询
@@ -178,13 +180,62 @@ public class AddPaginationElementGenerator extends AbstractXmlElementGenerator
 	    for(int i = 0 ; i < columns.size() ; i++ ){
 	    	IntrospectedColumn column = (IntrospectedColumn)columns.get(i);
 	    	String columnName = column.getActualColumnName();
+	    	String colJavaName = column.getJavaProperty();
 	    	XmlElement ifExistElement = new XmlElement("if");
-	    	ifExistElement.addAttribute(new Attribute("test ", columnName + " !=null"));
+	    	ifExistElement.addAttribute(new Attribute("test ", colJavaName + " !=null"));
 	    	sb.setLength(0);
 	        sb.append(" and ").
 	           append(columnName).
 	           append(" = #{").
+	           append(colJavaName).
+	           append(",jdbcType=").
+	           append(column.getJdbcTypeName()).
+	           append("}");
+	    	ifExistElement.addElement(new TextElement(sb.toString()));
+	    	whereElement.addElement(ifExistElement);
+	    }
+	    parentElement.addElement(pageElement);
+  }
+  /***
+   * 添加条件查询记录总数
+   * @param parentElement
+   */
+  public void addCountCondition(XmlElement parentElement){
+	//selectAllByPager
+	    XmlElement pageElement = new XmlElement("select");
+
+	    pageElement.addAttribute(new Attribute("id", "countByCondition"));
+	    pageElement.addAttribute(
+	      new Attribute("resultType", 
+	      "java.lang.Integer"));
+	    pageElement.addAttribute(new Attribute("parameterType", "map"));
+	    this.context.getCommentGenerator().addComment(pageElement);
+
+
+	    pageElement.addElement(new TextElement("select count(1)"));
+	    StringBuilder sb = new StringBuilder();
+	    sb.setLength(0);
+	    sb.append(" from ");
+	    sb.append(this.introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
+	    pageElement.addElement(new TextElement(sb.toString()));
+	    
+	    XmlElement whereElement = new XmlElement("trim");
+	    whereElement.addAttribute(new Attribute("prefix", "WHERE"));
+	    whereElement.addAttribute(new Attribute("prefixOverrides", "AND"));
+	    pageElement.addElement(whereElement);
+	    
+	    List columns = this.introspectedTable.getAllColumns();
+	    for(int i = 0 ; i < columns.size() ; i++ ){
+	    	IntrospectedColumn column = (IntrospectedColumn)columns.get(i);
+	    	String columnName = column.getActualColumnName();
+	    	String colJavaName = column.getJavaProperty();
+	    	XmlElement ifExistElement = new XmlElement("if");
+	    	ifExistElement.addAttribute(new Attribute("test ", colJavaName + " !=null"));
+	    	sb.setLength(0);
+	        sb.append(" and ").
 	           append(columnName).
+	           append(" = #{").
+	           append(colJavaName).
 	           append(",jdbcType=").
 	           append(column.getJdbcTypeName()).
 	           append("}");
