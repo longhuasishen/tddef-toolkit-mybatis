@@ -46,5 +46,5 @@ generatorConfig.xml配置如下：
 
 		<!-- 要生成的表 -->
 		<table tableName="auth_org" domainObjectName="AuthOrg" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
-		</context>
+	</context>
 </generatorConfiguration>
